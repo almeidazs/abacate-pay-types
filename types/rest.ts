@@ -189,7 +189,13 @@ export interface RESTPostCreateCouponBody {
 		 */
 		code: string;
 		/**
+		 * Discount amount to be applied.
+		 */
+		discount: number;
+		/**
 		 * Type of discount applied, percentage or fixed.
+		 * 
+		 * @see {@link CouponDiscountKind}
 		 */
 		discountKind: CouponDiscountKind;
 		/**
