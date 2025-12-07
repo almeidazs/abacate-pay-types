@@ -129,7 +129,7 @@ export interface RESTPostCreateQRCodePixBody
  *
  * @reference https://docs.abacatepay.com/pages/pix-qrcode/simulate-payment
  */
-export interface RESTPostSimulatePaymentBody {
+export interface RESTPostSimulatePaymentQueryParams {
 	/**
 	 * QRCode Pix ID.
 	 */
