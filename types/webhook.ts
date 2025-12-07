@@ -1,0 +1,178 @@
+import type {
+	APIProduct,
+	PaymentFrequency,
+	PaymentMethod,
+	PaymentStatus,
+} from './entities/charge';
+import type { APICustomer } from './entities/customer';
+import type { APIWithdraw, WithdrawStatus } from './entities/withdraw';
+
+export interface BaseWebhookEvent<Type extends string, Data extends object> {
+	/**
+	 * The data received in the event.
+	 */
+	data: Data;
+	/**
+	 * Unique identifier for the webhook.
+	 */
+	id: string;
+	/**
+	 * This field identifies the type of event received.
+	 */
+	event: Type;
+	/**
+	 * Indicates whether the event occurred in the development environment.
+	 */
+	devMode: boolean;
+}
+
+/**
+ * https://docs.abacatepay.com/pages/webhooks#withdraw-failed
+ */
+export type WebhookWithdrawFailedEvent = BaseWebhookEvent<
+	'withdraw.failed',
+	{
+		/**
+		 * Transaction data.
+		 */
+		transaction: Omit<APIWithdraw, 'status'> & {
+			/**
+			 * Status of the withdraw. Always `WithdrawStatus.Cancelled`.
+			 *
+			 * @see {@link WithdrawStatus.Cancelled}
+			 */
+			status: WithdrawStatus.Cancelled;
+		};
+	}
+>;
+
+/**
+ * https://docs.abacatepay.com/pages/webhooks#withdraw-done
+ */
+export type WebhookWithdrawDoneEvent = BaseWebhookEvent<
+	'withdraw.done',
+	{
+		/**
+		 * Transaction data.
+		 */
+		transaction: Omit<APIWithdraw, 'status'> & {
+			/**
+			 * Status of the withdraw. Always `WithdrawStatus.Complete`.
+			 *
+			 * @see {@link WithdrawStatus.Complete}
+			 */
+			status: WithdrawStatus.Complete;
+		};
+	}
+>;
+
+/**
+ * https://docs.abacatepay.com/pages/webhooks#billing-paid
+ */
+export type WebhookBillingPaidEvent = BaseWebhookEvent<
+	'billing.paid',
+	{
+		/**
+		 * Payment data.
+		 */
+		payment: {
+			/**
+			 * Charge amount in cents (e.g. 4000 = R$40.00).
+			 */
+			amount: number;
+			/**
+			 * The fee charged by AbacatePay.
+			 */
+			fee: 80;
+			/**
+			 * Payment method.
+			 *
+			 * @see {@link PaymentMethod}
+			 */
+			method: PaymentMethod;
+		};
+	} & (
+		| {
+				pixQrCode: {
+					/**
+					 * Charge amount in cents (e.g. 4000 = R$40.00).
+					 */
+					amount: number;
+					/**
+					 * Unique billing identifier.
+					 */
+					id: string;
+					/**
+					 * Kind of the payment
+					 */
+					kind: 'PIX';
+					/**
+					 * Billing status, can only be `PAID` here
+					 *
+					 * @see {@link PaymentStatus.Paid}
+					 */
+					status: PaymentStatus.Paid;
+				};
+		  }
+		| {
+				billing: {
+					/**
+					 * Charge amount in cents (e.g. 4000 = R$40.00).
+					 */
+					amount: number;
+					/**
+					 * Counpons used in the billing.
+					 */
+					couponsUsed: string[];
+					/**
+					 * Customer of the charge.
+					 */
+					customer: APICustomer;
+					/**
+					 * Payment frequency.
+					 *
+					 * @see {@link PaymentFrequency}
+					 */
+					frequency: PaymentFrequency;
+					/**
+					 * Unique billing identifier.
+					 */
+					id: string;
+					/**
+					 * Payment methods?
+					 *
+					 * @unstable
+					 */
+					kind: PaymentMethod[];
+					/**
+					 * Charge amount in cents.
+					 *
+					 * @unstable
+					 */
+					paidAmount: number;
+					/**
+					 * Products used in the billing.
+					 */
+					products: (Pick<APIProduct, 'quantity' | 'externalId'> & {
+						id: string;
+					})[];
+					/**
+					 * Status of the payment. Always `PaymentStatus.Paid`.
+					 *
+					 * @see {@link PaymentStatus.Paid}
+					 */
+					status: PaymentStatus.Paid;
+				};
+		  }
+	)
+>;
+
+/**
+ * https://docs.abacatepay.com/pages/webhooks
+ *
+ * Any field that contains the tag "@unstable" means that the field is an assumption, it is uncertain (Since AbacatePay does not provide any information about).
+ */
+export type WebhookEvent =
+	| WebhookWithdrawDoneEvent
+	| WebhookWithdrawFailedEvent
+	| WebhookBillingPaidEvent;
