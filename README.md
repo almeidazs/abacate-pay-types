@@ -1,23 +1,100 @@
 <h1 align="center">AbacatePay API Types</h1>
+<p align="center">Tipagens oficiais e helpers modernos para integrar com a API da AbacatePay.</p>
 
-<p align="center">Definições de tipos para a API da Abacate Pay</p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/abacate-pay-types"><img src="https://img.shields.io/npm/v/abacate-pay-types" /></a>
+  <a href="https://www.npmjs.com/package/abacate-pay-types"><img src="https://img.shields.io/npm/dm/abacate-pay-types" /></a>
+  <img src="https://img.shields.io/badge/built%20for-bun%20%26%20node-0b7" />
+  <img src="https://img.shields.io/badge/types-TypeScript-3178c6" />
+  <img src="https://img.shields.io/badge/license-MIT-lightgray" />
+</p>
 
-<h2 align="center">Instalando</h2>
+<h2 align="center">📦 Instalação</h2>
 
 ```bash
 npm install abacate-pay-types
 ```
 
-<h2 align="center">Estrutura</h2>
+<h2 align="center">Como a AbacatePay API Types documenta</h2>
 
-- Qualquer tipagem exportada com o prefixo `API` representa tipos de estruturas da API.
-- Qualquer tipagem exportada com o prefixo `Webhook` representa tipos que você recebe de [eventos de webhook](https://docs.abacatepay.com/pages/webhooks).
-- Qualquer tipagem exportada com o prefixo `REST<HTTP Method>` representa tipos que você recebe ou envia para a API via requisições.
-   - Para endpoints/rotas que necessitam de query parameters ou body, as tipagens então vão ser documentadas com o sufixo `Body` ou `QueryParams`.
-   - Por exemplo, `RESTPostCreateNewChargeBody` e `RESTGetCheckQRCodePixStatusQueryParams`.
-   - Qualquer tipo que tenha o sufixo `Data` representa dados que vem diretamente de uma resposta de alguma requisição.
-   - Por exemplo, `RESTGetListCouponsData` é a tipagem para a rota `/v1/coupon/list`.
+- Prefixo `API*`
+Representa estruturas gerais da API (Objetos retornados, modelos internos etc.).
 
-**Comos os tipos são documentados:** O pacate `abacate-api-types` vai adicionar tipos somente para campos e estrutura que estão presentes na documentação oficial da [API da AbacatePay](https://docs.abacatepay.com/pages/introduction). Nada além disso será documentado.
+- Prefixo `Webhook*`
+Representa payloads recebidos pelos eventos de webhook.
+Documentação: https://docs.abacatepay.com/pages/webhooks
 
-**@unstable**: Campos que contam com a tag `@unstable` (Como é o caso do `WebhookWithdrawDoneEvent.billing.kind`), que significam que o campo não possui nenhuma documentação certa sobre qual é o tipo do campo, mas nós assumimos que o tipo do campo é determinado pelos exemplos fornecido na documentação oficial.
+- Prefixo `REST<HTTPMethod>*`
+Tipos usados em requisições diretas à API.
+  - Sufixo Body → corpo enviado na requisição
+  Ex.: `RESTPostCreateNewChargeBody`
+
+  - Sufixo `QueryParams` → parâmetros de query
+  Ex.: `RESTGetCheckQRCodePixStatusQueryParams`
+
+  - Sufixo `Data` → dados retornados pela API
+  Ex.: `RESTGetListCouponsData`
+
+- O pacote **NÃO adiciona tipos além do que existe na documentação oficial**.
+Cada tipo reflete exatamente o que está documentado aqui:
+https://docs.abacatepay.com/pages/introduction
+
+- Campos marcados com `@unstable`
+São campos que não têm definição formal na documentação, mas cujo tipo foi inferido com base nos exemplos oficiais.
+(Ex.: `WebhookWithdrawDoneEvent.billing.kind`)
+
+<h2 align="center">Quickstart</h2>
+
+<p align="center"><strong>Crie um novo cupom</strong></p>
+
+```ts
+import {
+	API_BASE,
+	API_VERSION,
+	type APICoupon,
+	type RESTPostCreateCouponBody,
+	Routes,
+} from 'abacate-api-types';
+
+async function createCoupon(body: RESTPostCreateCouponBody) {
+	const path = `${API_BASE_URL}/${API_VERSION}/${Routes.createCoupon()}`;
+
+	const response = await fetch(path, {
+		method: 'POST',
+		body: JSON.stringify(body),
+	});
+
+	const data: APICoupon = await response.json();
+
+	return data;
+}
+```
+
+<p align="center"><strong>Crie um servidor e escute eventos de Webhooks do Aabacate</strong></p>
+
+```ts
+import { type WebhookEvent, WebhookEventType } from 'abacate-api-types';
+
+Bun.serve({
+    routes: {
+        async '/webhooks/abacate'(request) {
+            const { data, event }: WebhookEvent = await request.json();
+
+            switch (event) {
+                case WebhookEventType.BillingPaid:
+                    console.log(`Um novo pagamento de ${data.payment.amount} foi feito`);
+
+                    break;
+                case WebhookEventType.WithdrawDone:
+                    console.log(`Um novo saque foi feito ${data.transaction.receiptUrl}`);
+
+                    break;
+                case WebhookEventType.WithdrawFailed:
+                    console.log(`O saque com o ID ${data.transaction.id} falhou`);
+            }
+
+            return new Response('OK');
+        },
+    },
+});
+```

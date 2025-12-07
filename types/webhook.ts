@@ -7,7 +7,10 @@ import type {
 import type { APICustomer } from './entities/customer';
 import type { APIWithdraw, WithdrawStatus } from './entities/withdraw';
 
-export interface BaseWebhookEvent<Type extends string, Data extends object> {
+export interface BaseWebhookEvent<
+	Type extends WebhookEventType,
+	Data extends object,
+> {
 	/**
 	 * The data received in the event.
 	 */
@@ -30,7 +33,7 @@ export interface BaseWebhookEvent<Type extends string, Data extends object> {
  * https://docs.abacatepay.com/pages/webhooks#withdraw-failed
  */
 export type WebhookWithdrawFailedEvent = BaseWebhookEvent<
-	'withdraw.failed',
+	WebhookEventType.WithdrawFailed,
 	{
 		/**
 		 * Transaction data.
@@ -50,7 +53,7 @@ export type WebhookWithdrawFailedEvent = BaseWebhookEvent<
  * https://docs.abacatepay.com/pages/webhooks#withdraw-done
  */
 export type WebhookWithdrawDoneEvent = BaseWebhookEvent<
-	'withdraw.done',
+	WebhookEventType.WithdrawDone,
 	{
 		/**
 		 * Transaction data.
@@ -70,7 +73,7 @@ export type WebhookWithdrawDoneEvent = BaseWebhookEvent<
  * https://docs.abacatepay.com/pages/webhooks#billing-paid
  */
 export type WebhookBillingPaidEvent = BaseWebhookEvent<
-	'billing.paid',
+	WebhookEventType.BillingPaid,
 	{
 		/**
 		 * Payment data.
@@ -176,3 +179,12 @@ export type WebhookEvent =
 	| WebhookWithdrawDoneEvent
 	| WebhookWithdrawFailedEvent
 	| WebhookBillingPaidEvent;
+
+/**
+ * https://docs.abacatepay.com/pages/webhooks
+ */
+export enum WebhookEventType {
+	WithdrawFailed = 'withdraw.failed',
+	WithdrawDone = 'withdraw.done',
+	BillingPaid = 'billing.paid',
+}

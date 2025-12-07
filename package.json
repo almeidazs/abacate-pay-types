@@ -1,12 +1,13 @@
 {
-	"description": "Abacate Pay API typings that are always up to date.",
 	"name": "abacate-pay-types",
-	"version": "0.0.1",
+	"version": "0.0.2",
+	"description": "Abacate Pay API typings that are always up to date.",
 	"type": "module",
-	"main": "./dist/index.d.ts",
+	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"import": "./dist/index.js",
 			"types": "./dist/index.d.ts"
 		}
 	},
@@ -14,9 +15,10 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --emitDeclarationOnly",
-		"prepublishOnly": "tsc --emitDeclarationOnly",
-		"fmt": "bunx biome check --write ."
+		"gen:version": "bun run scripts/version.ts",
+		"build": "bun gen:version && tsc",
+		"prepublishOnly": "bun run build",
+		"fmt": "bunx biome check --write . && clear"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.8",

@@ -7,4 +7,7 @@ export * from './entities/withdraw';
 
 export * from './rest';
 
+export { Routes } from './routes';
+
+export { API_VERSION, version } from './version';
 export * from './webhook';
