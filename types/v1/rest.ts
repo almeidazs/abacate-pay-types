@@ -2,12 +2,31 @@ import type {
 	APICharge,
 	APICoupon,
 	APICustomer,
+	APIQRCodePIX,
 	APIStore,
 	APIWithdraw,
 	CouponDiscountKind,
 	PaymentFrequency,
 	PaymentMethod,
+	PaymentStatus,
 } from '.';
+
+// ALL responses returns an object like this
+type APIResponse<Data> =
+	| {
+			/**
+			 * The data of the response
+			 */
+			data: Data;
+			error: null;
+	  }
+	| {
+			data: null;
+			/**
+			 * Error message returned from the API
+			 */
+			error: string;
+	  };
 
 /**
  * https://api.abacatepay.com/v1/customer/create
@@ -15,6 +34,13 @@ import type {
  * @reference https://docs.abacatepay.com/pages/client/create
  */
 export type RESTPostCreateCustomerBody = APICustomer['metadata'];
+
+/**
+ * https://api.abacatepay.com/v1/customer/create
+ *
+ * @reference https://docs.abacatepay.com/pages/client/create
+ */
+export type RESTPostCreateCustomerData = APIResponse<APICustomer>;
 
 /**
  * https://api.abacatepay.com/v1/billing/create
@@ -104,6 +130,13 @@ export interface RESTPostCreateNewChargeBody {
 }
 
 /**
+ * https://api.abacatepay.com/v1/billing/create
+ *
+ * @reference https://docs.abacatepay.com/pages/payment/create
+ */
+export type RESTPostCreateNewChargeData = APIResponse<APICharge>;
+
+/**
  * https://api.abacatepay.com/v1/pixQrCode/create
  *
  * @reference https://docs.abacatepay.com/pages/pix-qrcode/create
@@ -125,6 +158,13 @@ export interface RESTPostCreateQRCodePixBody
 }
 
 /**
+ * https://api.abacatepay.com/v1/pixQrCode/create
+ *
+ * @reference https://docs.abacatepay.com/pages/pix-qrcode/create
+ */
+export type RESTPostCreateQRCodePixData = APIResponse<APIQRCodePIX>;
+
+/**
  * https://api.abacatepay.com/v1/pixQrCode/simulate-payment
  *
  * @reference https://docs.abacatepay.com/pages/pix-qrcode/simulate-payment
@@ -135,6 +175,13 @@ export interface RESTPostSimulatePaymentQueryParams {
 	 */
 	id: string;
 }
+
+/**
+ * https://api.abacatepay.com/v1/pixQrCode/simulate-payment
+ *
+ * @reference https://docs.abacatepay.com/pages/pix-qrcode/simulate-payment
+ */
+export type RESTPostSimulatePaymentData = APIResponse<APIQRCodePIX>;
 
 /**
  * https://api.abacatepay.com/v1/pixQrCode/check
@@ -149,28 +196,34 @@ export interface RESTGetCheckQRCodePixStatusQueryParams {
 }
 
 /**
+ * https://api.abacatepay.com/v1/pixQrCode/check
+ *
+ * @reference https://docs.abacatepay.com/pages/pix-qrcode/check
+ */
+export type RESTGetCheckQRCodePixStatusData = APIResponse<{
+	/**
+	 * QRCode Pix expiration date.
+	 */
+	expiresAt: string;
+	/**
+	 * Information about the progress of QRCode Pix.
+	 */
+	status: PaymentStatus;
+}>;
+
+/**
  * https://api.abacatepay.com/v1/billing/list
  *
  * @reference https://docs.abacatepay.com/pages/payment/list
  */
-export interface RESTGetListBillingsData {
-	/**
-	 * Array of charges.
-	 */
-	data: APICharge[];
-}
+export type RESTGetListBillingsData = APIResponse<APICharge[]>;
 
 /**
  * https://api.abacatepay.com/v1/customer/list
  *
  * @reference https://docs.abacatepay.com/pages/client/list
  */
-export interface RESTGetListCustomersData {
-	/**
-	 * Array of customers.
-	 */
-	data: APICustomer[];
-}
+export type RESTGetListCustomersData = APIResponse<APICustomer[]>;
 
 /**
  * https://api.abacatepay.com/v1/coupon/create
@@ -216,6 +269,13 @@ export interface RESTPostCreateCouponBody {
 }
 
 /**
+ * https://api.abacatepay.com/v1/coupon/create
+ *
+ * @reference https://docs.abacatepay.com/pages/coupon/create
+ */
+export type RESTPostCreateCouponData = APIResponse<APICoupon>;
+
+/**
  * https://api.abacatepay.com/v1/withdraw/create
  *
  * @reference https://docs.abacatepay.com/pages/withdraw/create
@@ -253,6 +313,13 @@ export interface RESTPostCreateNewWithdrawBody {
 }
 
 /**
+ * https://api.abacatepay.com/v1/withdraw/create
+ *
+ * @reference https://docs.abacatepay.com/pages/withdraw/create
+ */
+export type RESTPostCreateNewWithdrawData = APIResponse<APIWithdraw>;
+
+/**
  * https://api.abacatepay.com/v1/withdraw/get
  *
  * @reference https://docs.abacatepay.com/pages/withdraw/get
@@ -285,79 +352,54 @@ export interface RESTGetRevenueByPeriodQueryParams {
  *
  * @reference https://docs.abacatepay.com/pages/trustMRR/get
  */
-export interface RESTGetMerchantData {
+export type RESTGetMerchantData = APIResponse<{
 	/**
-	 * Merchant data.
+	 * Store name.
 	 */
-	data: {
-		/**
-		 * Store name.
-		 */
-		name: string;
-		/**
-		 * Store website.
-		 */
-		website: string;
-		/**
-		 * Store creation date.
-		 */
-		createdAt: string;
-	};
-}
+	name: string;
+	/**
+	 * Store website.
+	 */
+	website: string;
+	/**
+	 * Store creation date.
+	 */
+	createdAt: string;
+}>;
 
 /**
  * https://api.abacatepay.com/v1/public-mrr/mrr
  *
  * @reference https://docs.abacatepay.com/pages/trustMRR/mrr
  */
-export interface RESTGetMRRData {
+export type RESTGetMRRData = APIResponse<{
 	/**
-	 * MMR data.
+	 * Monthly recurring revenue in cents. Value 0 indicates that there is no recurring revenue at the moment.
 	 */
-	data: {
-		/**
-		 * Monthly recurring revenue in cents. Value 0 indicates that there is no recurring revenue at the moment.
-		 */
-		mrr: number;
-		/**
-		 * Total active subscriptions. Value 0 indicates that there are no currently active subscriptions.
-		 */
-		totalActiveSubscriptions: number;
-	};
-}
+	mrr: number;
+	/**
+	 * Total active subscriptions. Value 0 indicates that there are no currently active subscriptions.
+	 */
+	totalActiveSubscriptions: number;
+}>;
 
 /**
  * https://api.abacatepay.com/v1/store/get
  *
  * @reference https://docs.abacatepay.com/pages/store/get
  */
-export interface RESTGetStoreDetailsData {
-	/**
-	 * Store data.
-	 */
-	data: APIStore;
-}
+export type RESTGetStoreDetailsData = APIResponse<APIStore>;
 
 /**
  * https://api.abacatepay.com/v1/withdraw/list
  *
  * @reference https://docs.abacatepay.com/pages/withdraw/list
  */
-export interface RESTGetListWithdrawsData {
-	/**
-	 * Array of data.
-	 */
-	data: APIWithdraw[];
-}
+export type RESTGetListWithdrawsData = APIResponse<APIWithdraw[]>;
 
 /**
  * https://api.abacatepay.com/v1/coupon/list
  *
  * @reference https://docs.abacatepay.com/pages/coupon/list
  */
-export interface RESTGetListCouponsData {
-	/**
-	 * Array of coupons.
-	 */
-	data: APICoupon[];
-}
+export type RESTGetListCouponsData = APIResponse<APICoupon[]>;
