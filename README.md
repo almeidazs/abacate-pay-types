@@ -17,6 +17,18 @@ npm install abacate-pay-types
 
 <h2 align="center">Como a AbacatePay API Types documenta</h2>
 
+Antes de tudo, você deve específicar a versão da API que você deseja importar os tipos. Coloque `/v*` no final da importação, sendo `*` a versão que deseja usar:
+
+```ts
+import { APICustomer } from 'abacate-api-types/v1'
+```
+
+Para tipos globais como `API_BASE_URL`, `API_VERSION`, `version` e `Routes`, apenas import normalmente sem a versão.
+
+```ts
+import { version } from 'abacate-api-types'
+```
+
 - Prefixo `API*`
 Representa estruturas gerais da API (Objetos retornados, modelos internos etc.).
 

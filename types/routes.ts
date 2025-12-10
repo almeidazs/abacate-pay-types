@@ -2,7 +2,7 @@ import type {
 	RESTGetCheckQRCodePixStatusQueryParams,
 	RESTGetSearchWithdrawQueryParams,
 	RESTPostSimulatePaymentQueryParams,
-} from './rest';
+} from './v1/rest';
 
 export const API_BASE_URL = 'https://api.abacatepay.com/';
 
