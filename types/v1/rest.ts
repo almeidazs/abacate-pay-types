@@ -14,7 +14,7 @@ import type {
  *
  * @reference https://docs.abacatepay.com/pages/client/create
  */
-export type RESTPostCreateClientBody = APICustomer['metadata'];
+export type RESTPostCreateCustomerBody = APICustomer['metadata'];
 
 /**
  * https://api.abacatepay.com/v1/billing/create
