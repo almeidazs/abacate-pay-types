@@ -3,7 +3,7 @@
  */
 export interface APIWithdraw {
 	/**
-	 * Unique ID of the AvocadoPay withdrawal transaction.
+	 * Unique ID of the AbacatePay withdrawal transaction.
 	 */
 	id: string;
 	/**
