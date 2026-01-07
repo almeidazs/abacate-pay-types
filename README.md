@@ -2,8 +2,8 @@
 <p align="center">Tipagens oficiais e helpers modernos para integrar com a API da AbacatePay.</p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/abacate-pay-types"><img src="https://img.shields.io/npm/v/abacate-pay-types" /></a>
-  <a href="https://www.npmjs.com/package/abacate-pay-types"><img src="https://img.shields.io/npm/dm/abacate-pay-types" /></a>
+  <a href="https://www.npmjs.com/package/@abacatepay/types"><img src="https://img.shields.io/npm/v/@abacatepay/types" /></a>
+  <a href="https://www.npmjs.com/package/@abacatepay/types"><img src="https://img.shields.io/npm/dm/@abacatepay/types" /></a>
   <img src="https://img.shields.io/badge/built%20for-bun%20%26%20node-0b7" />
   <img src="https://img.shields.io/badge/types-TypeScript-3178c6" />
   <img src="https://img.shields.io/badge/license-MIT-lightgray" />
@@ -12,7 +12,7 @@
 <h2 align="center">📦 Instalação</h2>
 
 ```bash
-npm install abacate-pay-types
+npm install @abacatepay/types
 ```
 
 <h2 align="center">Como a AbacatePay API Types documenta</h2>
@@ -20,13 +20,13 @@ npm install abacate-pay-types
 Antes de tudo, você deve específicar a versão da API que você deseja importar os tipos. Coloque `/v*` no final da importação, sendo `*` a versão que deseja usar:
 
 ```ts
-import { APICustomer } from 'abacate-api-types/v1'
+import { APICustomer } from '@abacatepay/types/v1'
 ```
 
 Para tipos globais como `API_BASE_URL`, `API_VERSION`, `version` e `Routes`, apenas import normalmente sem a versão.
 
 ```ts
-import { version } from 'abacate-api-types'
+import { version } from '@abacatepay/types'
 ```
 
 - Prefixo `API*`
@@ -66,7 +66,7 @@ import {
 	type APICoupon,
 	type RESTPostCreateCouponBody,
 	Routes,
-} from 'abacate-api-types';
+} from '@abacatepay/types/v1';
 
 async function createCoupon(body: RESTPostCreateCouponBody) {
 	const path = `${API_BASE_URL}/${API_VERSION}/${Routes.createCoupon()}`;
@@ -85,7 +85,7 @@ async function createCoupon(body: RESTPostCreateCouponBody) {
 <p align="center"><strong>Crie um servidor e escute eventos de Webhooks do Aabacate</strong></p>
 
 ```ts
-import { type WebhookEvent, WebhookEventType } from 'abacate-api-types';
+import { type WebhookEvent, WebhookEventType } from '@abacatepay/types/v1';
 
 Bun.serve({
     routes: {

@@ -1,6 +1,6 @@
 {
 	"version": "0.0.3",
-	"name": "abacate-pay-types",
+	"name": "@abacatepay/types",
 	"description": "Abacate Pay API typings that are always up to date.",
 	"type": "module",
 	"main": "./dist/index.js",
