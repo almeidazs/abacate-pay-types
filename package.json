@@ -1,5 +1,5 @@
 {
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"name": "@abacatepay/types",
 	"description": "Abacate Pay API typings that are always up to date.",
 	"type": "module",
@@ -40,5 +40,8 @@
 		"abacatepay",
 		"types",
 		"typescript"
-	]
+	],
+	"publishConfig": {
+		"access": "public"
+	}
 }
