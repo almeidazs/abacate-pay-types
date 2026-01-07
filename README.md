@@ -69,7 +69,7 @@ import {
 } from '@abacatepay/types/v1';
 
 async function createCoupon(body: RESTPostCreateCouponBody) {
-	const path = `${API_BASE_URL}/${API_VERSION}/${Routes.createCoupon()}`;
+	const path = `${API_BASE_URL}/${API_VERSION}/${Routes.coupon.create}`;
 
 	const response = await fetch(path, {
 		method: 'POST',
